@@ -7,7 +7,7 @@
             contenteditable="true"
             role="textbox"
             spellcheck="true"
-            @keypress="updateValueProps(); $emit('keypress', $event)"
+            @keypress="updateValueProps(); resetColour(); $emit('keypress', $event)"
             @keydown="updateValueProps(); $emit('keydown', $event)"
             @keyup="updateValueProps(); $emit('keyup', $event)"
             @textInput="updateValueProps(); onTextInput($event); $emit('textInput', $event)"
@@ -83,10 +83,13 @@ export default Vue.component('irc-input', {
                 this.updateValueProps();
             }, 0);
         },
-        onFocus(event) {
+        resetColour() {
             if (!this.getRawText() && this.default_colour) {
                 this.setColour(this.default_colour.code, this.default_colour.colour);
             }
+        },
+        onFocus(event) {
+            this.resetColour();
         },
         updateValueProps() {
             let selection = window.getSelection();
@@ -203,10 +206,8 @@ export default Vue.component('irc-input', {
             }
 
             if (this.default_colour) {
-                this.$nextTick(() => {
-                    this.focus();
-                    this.setColour(this.default_colour.code, this.default_colour.colour);
-                });
+                this.focus();
+                this.setColour(this.default_colour.code, this.default_colour.colour);
             }
 
             this.updateValueProps();
